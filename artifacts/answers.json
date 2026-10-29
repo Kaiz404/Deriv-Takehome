@@ -1,0 +1,149 @@
+[
+  {
+    "id": 1,
+    "question": "What authentication methods does the API support?",
+    "answer": "API keys are the primary authentication method; send them in the `Authorization` header using the Bearer scheme. HTTP Basic authentication and API keys passed as query parameters are not supported.",
+    "supported": true,
+    "citations": [
+      "authentication.md#c1",
+      "authentication.md#c4"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 2,
+    "question": "How long are webhook delivery logs retained?",
+    "answer": "Webhook delivery logs are retained for 30 days.",
+    "supported": true,
+    "citations": [
+      "webhooks.md#c3"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 3,
+    "question": "Is there a free plan for startups?",
+    "answer": "Yes. The Free plan costs $0 per month and is available to startups; it includes 10,000 API requests per month, with no credit card required. There is no separate startup plan or discount program.",
+    "supported": true,
+    "citations": [
+      "pricing.md#c1"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 4,
+    "question": "What happens if I exceed the rate limit?",
+    "answer": "The API rejects the request with HTTP 429 Too Many Requests and includes a `Retry-After` header stating how many seconds to wait. Rejected requests do not count against the monthly quota; if a key keeps exceeding its limit continuously for more than 15 minutes, it is temporarily blocked for 1 hour and the account owner is notified by email.",
+    "supported": true,
+    "citations": [
+      "rate-limits.md#c2"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 5,
+    "question": "Can I delete customer data immediately on request?",
+    "answer": "On Free and Pro, a customer record is removed from the live database immediately, but fully purged from all systems, including backups, within 30 days. Immediate permanent deletion, including from backups, is available only on Enterprise using `purge=true`; requests on other plans are rejected with HTTP 403.",
+    "supported": true,
+    "citations": [
+      "data-retention.md#c2"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 6,
+    "question": "Does the platform support GraphQL subscriptions?",
+    "answer": "The knowledge base does not provide enough information to answer this.",
+    "supported": false,
+    "citations": [],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 7,
+    "question": "How many requests per minute does the Pro plan allow?",
+    "answer": "The Pro plan allows 600 requests per minute.",
+    "supported": true,
+    "citations": [
+      "rate-limits.md#c1",
+      "pricing.md#c2"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 8,
+    "question": "How do I check that a webhook call really came from Nimbus?",
+    "answer": "Verify the `Nimbus-Signature` header by computing an HMAC-SHA256 signature of the raw request body with your endpoint’s signing secret and comparing it with the provided signature. Also reject deliveries whose `Nimbus-Timestamp` is more than 5 minutes old to prevent replay attacks.",
+    "supported": true,
+    "citations": [
+      "webhooks.md#c1"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 9,
+    "question": "Is there an SLA guaranteeing 99.99% uptime on Enterprise?",
+    "answer": "The knowledge base does not provide enough information to answer this.",
+    "supported": false,
+    "citations": [],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 10,
+    "question": "If my webhook endpoint is down, how long will you keep retrying?",
+    "answer": "Failed deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed; the endpoint is disabled if it has failed every delivery for 3 consecutive days.",
+    "supported": true,
+    "citations": [
+      "webhooks.md#c2"
+    ],
+    "gate": null,
+    "generation_issue": null
+  },
+  {
+    "id": 11,
+    "question": "asdkjh qwerty zxcv ???",
+    "answer": "The knowledge base does not provide enough information to answer this.",
+    "supported": false,
+    "citations": [],
+    "gate": "NO_RELEVANT_CONTEXT",
+    "generation_issue": {
+      "code": "NO_RELEVANT_CONTEXT",
+      "severity": "info",
+      "detail": "Gate NO_RELEVANT_CONTEXT: LLM call skipped."
+    }
+  },
+  {
+    "id": 12,
+    "question": "   ",
+    "answer": "The knowledge base does not provide enough information to answer this.",
+    "supported": false,
+    "citations": [],
+    "gate": "INVALID_QUESTION",
+    "generation_issue": {
+      "code": "INVALID_QUESTION",
+      "severity": "info",
+      "detail": "Gate INVALID_QUESTION: LLM call skipped."
+    }
+  },
+  {
+    "id": 13,
+    "question": "What is the meaning of life?",
+    "answer": "The knowledge base does not provide enough information to answer this.",
+    "supported": false,
+    "citations": [],
+    "gate": "NO_RELEVANT_CONTEXT",
+    "generation_issue": {
+      "code": "NO_RELEVANT_CONTEXT",
+      "severity": "info",
+      "detail": "Gate NO_RELEVANT_CONTEXT: LLM call skipped."
+    }
+  }
+]

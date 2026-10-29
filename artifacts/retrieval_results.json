@@ -1,0 +1,380 @@
+[
+  {
+    "id": 1,
+    "question": "What authentication methods does the API support?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "authentication.md#c4",
+        "doc_id": "authentication.md",
+        "score": 1,
+        "text": "## Unsupported methods\n\nHTTP Basic authentication and passing API keys as query string parameters are not supported.",
+        "bm25": 7.7283,
+        "cosine": 0.6273
+      },
+      {
+        "chunk_id": "authentication.md#c0",
+        "doc_id": "authentication.md",
+        "score": 0.9839,
+        "text": "# Authentication\n\nAll API requests must be authenticated and sent over HTTPS. Requests over plain HTTP are rejected.",
+        "bm25": 3.5263,
+        "cosine": 0.6089
+      },
+      {
+        "chunk_id": "authentication.md#c1",
+        "doc_id": "authentication.md",
+        "score": 0.9683,
+        "text": "## API keys\n\nAPI keys are the primary authentication method. Send the key in the `Authorization` header using the Bearer scheme: `Authorization: Bearer <api_key>`. Keys are created in the dashboard and are shown only once at creation. Each account can hold up to 10 active keys. Keys should be rotated at least every 90 days.",
+        "bm25": 2.6016,
+        "cosine": 0.5466
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 2,
+    "question": "How long are webhook delivery logs retained?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "webhooks.md#c3",
+        "doc_id": "webhooks.md",
+        "score": 1,
+        "text": "## Delivery logs\n\nWebhook delivery logs, including request payloads, response codes, and timing, are retained for 30 days and can be viewed in the dashboard. Failed events can be replayed manually from the dashboard while their log entry still exists.",
+        "bm25": 11.2573,
+        "cosine": 0.707
+      },
+      {
+        "chunk_id": "data-retention.md#c1",
+        "doc_id": "data-retention.md",
+        "score": 0.9839,
+        "text": "## What we retain\n\nCustomer records you store through the API are retained for as long as your account is active. API request logs are retained for 90 days. Aggregated usage metrics are retained for 13 months for billing purposes.",
+        "bm25": 9.6597,
+        "cosine": 0.5009
+      },
+      {
+        "chunk_id": "webhooks.md#c2",
+        "doc_id": "webhooks.md",
+        "score": 0.9534,
+        "text": "## Delivery and retries\n\nYour endpoint must respond with a 2xx status code within 10 seconds. Any other response, or a timeout, counts as a failed delivery. Failed deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed and the endpoint is disabled if it has failed every delivery for 3 consecutive days.",
+        "bm25": 3.2199,
+        "cosine": 0.3976
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 3,
+    "question": "Is there a free plan for startups?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "pricing.md#c1",
+        "doc_id": "pricing.md",
+        "score": 1,
+        "text": "## Free plan\n\nThe Free plan costs $0 per month and is available to any individual or company, including startups. It includes 10,000 API requests per month and a rate limit of 60 requests per minute. Webhooks are limited to 3 endpoints. No credit card is required to sign up.\n\nThere is no separate plan or discount program specifically for startups. Startups that outgrow the Free plan move to the Pro plan like any other customer.",
+        "bm25": 8.3359,
+        "cosine": 0.6983
+      },
+      {
+        "chunk_id": "rate-limits.md#c1",
+        "doc_id": "rate-limits.md",
+        "score": 0.9612,
+        "text": "## Limits by plan\n\n- Free: 60 requests per minute\n- Pro: 600 requests per minute\n- Enterprise: custom, set in the contract\n\nShort bursts of up to 2x the per-minute limit are tolerated for at most 10 seconds.",
+        "bm25": 3.2858,
+        "cosine": 0.3685
+      },
+      {
+        "chunk_id": "pricing.md#c3",
+        "doc_id": "pricing.md",
+        "score": 0.9541,
+        "text": "## Enterprise plan\n\nEnterprise pricing is custom and negotiated annually with the sales team. Enterprise accounts get custom rate limits, unlimited webhook endpoints, mutual TLS authentication, and immediate data purge on request.",
+        "bm25": 1.7641,
+        "cosine": 0.4164
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 4,
+    "question": "What happens if I exceed the rate limit?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "rate-limits.md#c2",
+        "doc_id": "rate-limits.md",
+        "score": 1,
+        "text": "## Exceeding the rate limit\n\nWhen a client exceeds its rate limit, the API rejects the request with HTTP status 429 Too Many Requests. The response includes a `Retry-After` header giving the number of seconds to wait before retrying. Rejected requests are not counted against the monthly quota.\n\nEvery response carries `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers so clients can throttle themselves before hitting the limit.\n\nIf a key keeps exceeding its limit continuously for more than 15 minutes, the key is temporarily blocked for 1 hour and the account owner is notified by email.",
+        "bm25": 4.143,
+        "cosine": 0.6562
+      },
+      {
+        "chunk_id": "rate-limits.md#c0",
+        "doc_id": "rate-limits.md",
+        "score": 0.9761,
+        "text": "# API Rate Limits\n\nRate limits are applied per API key using a sliding one-minute window.",
+        "bm25": 2.4769,
+        "cosine": 0.459
+      },
+      {
+        "chunk_id": "pricing.md#c2",
+        "doc_id": "pricing.md",
+        "score": 0.9607,
+        "text": "## Pro plan\n\nThe Pro plan costs $49 per month. It includes 500,000 API requests per month and a rate limit of 600 requests per minute. Requests above the monthly quota are billed as overage at $0.50 per 1,000 requests. Pro accounts can configure up to 25 webhook endpoints.",
+        "bm25": 2.4741,
+        "cosine": 0.405
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 5,
+    "question": "Can I delete customer data immediately on request?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "data-retention.md#c2",
+        "doc_id": "data-retention.md",
+        "score": 1,
+        "text": "## Deletion requests\n\nYou can delete a customer record with `DELETE /v1/customers/{id}`. On Free and Pro plans, the record is removed from the live database immediately but is fully purged from all systems, including backups, within 30 days.\n\nImmediate permanent deletion, including removal from backups, is only available on the Enterprise plan by adding the `purge=true` query parameter. Purge requests on other plans are rejected with HTTP 403.",
+        "bm25": 6.6407,
+        "cosine": 0.6852
+      },
+      {
+        "chunk_id": "data-retention.md#c0",
+        "doc_id": "data-retention.md",
+        "score": 0.9761,
+        "text": "# Data Retention and Deletion",
+        "bm25": 3.7315,
+        "cosine": 0.4401
+      },
+      {
+        "chunk_id": "data-retention.md#c3",
+        "doc_id": "data-retention.md",
+        "score": 0.9685,
+        "text": "## Account closure\n\nWhen an account is closed, all customer data is deleted within 30 days. Backups are rotated every 35 days, so residual copies in backups are gone no later than 35 days after closure.",
+        "bm25": 3.4161,
+        "cosine": 0.4685
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 6,
+    "question": "Does the platform support GraphQL subscriptions?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "authentication.md#c4",
+        "doc_id": "authentication.md",
+        "score": 0.9612,
+        "text": "## Unsupported methods\n\nHTTP Basic authentication and passing API keys as query string parameters are not supported.",
+        "bm25": 0,
+        "cosine": 0.287
+      },
+      {
+        "chunk_id": "authentication.md#c0",
+        "doc_id": "authentication.md",
+        "score": 0.9485,
+        "text": "# Authentication\n\nAll API requests must be authenticated and sent over HTTPS. Requests over plain HTTP are rejected.",
+        "bm25": 0,
+        "cosine": 0.2351
+      },
+      {
+        "chunk_id": "authentication.md#c2",
+        "doc_id": "authentication.md",
+        "score": 0.9394,
+        "text": "## OAuth 2.0\n\nFor server-to-server integrations, the API supports the OAuth 2.0 client credentials grant. Access tokens are obtained from the `/oauth/token` endpoint and expire after 1 hour. Refresh tokens are not issued for the client credentials grant; request a new access token instead.",
+        "bm25": 0,
+        "cosine": 0.2358
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 7,
+    "question": "How many requests per minute does the Pro plan allow?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "rate-limits.md#c1",
+        "doc_id": "rate-limits.md",
+        "score": 1,
+        "text": "## Limits by plan\n\n- Free: 60 requests per minute\n- Pro: 600 requests per minute\n- Enterprise: custom, set in the contract\n\nShort bursts of up to 2x the per-minute limit are tolerated for at most 10 seconds.",
+        "bm25": 9.5492,
+        "cosine": 0.7149
+      },
+      {
+        "chunk_id": "pricing.md#c2",
+        "doc_id": "pricing.md",
+        "score": 0.9839,
+        "text": "## Pro plan\n\nThe Pro plan costs $49 per month. It includes 500,000 API requests per month and a rate limit of 600 requests per minute. Requests above the monthly quota are billed as overage at $0.50 per 1,000 requests. Pro accounts can configure up to 25 webhook endpoints.",
+        "bm25": 9.5061,
+        "cosine": 0.6686
+      },
+      {
+        "chunk_id": "pricing.md#c1",
+        "doc_id": "pricing.md",
+        "score": 0.9683,
+        "text": "## Free plan\n\nThe Free plan costs $0 per month and is available to any individual or company, including startups. It includes 10,000 API requests per month and a rate limit of 60 requests per minute. Webhooks are limited to 3 endpoints. No credit card is required to sign up.\n\nThere is no separate plan or discount program specifically for startups. Startups that outgrow the Free plan move to the Pro plan like any other customer.",
+        "bm25": 7.3386,
+        "cosine": 0.5466
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 8,
+    "question": "How do I check that a webhook call really came from Nimbus?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "webhooks.md#c1",
+        "doc_id": "webhooks.md",
+        "score": 1,
+        "text": "## Signature verification\n\nEvery webhook request includes a `Nimbus-Signature` header containing an HMAC-SHA256 signature of the raw request body, computed with your endpoint's signing secret. Verify the signature before trusting the payload. Requests also carry a `Nimbus-Timestamp` header; reject any delivery whose timestamp is more than 5 minutes old to prevent replay attacks.",
+        "bm25": 3.3396,
+        "cosine": 0.6583
+      },
+      {
+        "chunk_id": "changelog.txt#c0",
+        "doc_id": "changelog.txt",
+        "score": 0.9761,
+        "text": "Nimbus API changelog\n\n2026-09-15 - v2.4\nAdded the customer.deleted webhook event. Webhook payloads now include an event_version field.\n\n2026-07-02 - v2.3\nRaised the Pro plan rate limit from 300 to 600 requests per minute. Free plan limits are unchanged.\n\n2026-04-20 - v2.2\nIntroduced Server-Sent Events streaming for job status at GET /v1/jobs/{id}/events. Streams close automatically after 30 minutes.\n\n2026-01-10 - v2.1\nDeprecated API keys passed in query strings. They stopped working on 2026-03-01.",
+        "bm25": 2.4803,
+        "cosine": 0.4674
+      },
+      {
+        "chunk_id": "webhooks.md#c0",
+        "doc_id": "webhooks.md",
+        "score": 0.9685,
+        "text": "# Webhooks\n\nWebhooks notify your server when events happen in your Nimbus account, such as `job.completed`, `job.failed`, and `customer.deleted`.",
+        "bm25": 2.1783,
+        "cosine": 0.5998
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 9,
+    "question": "Is there an SLA guaranteeing 99.99% uptime on Enterprise?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "pricing.md#c3",
+        "doc_id": "pricing.md",
+        "score": 1,
+        "text": "## Enterprise plan\n\nEnterprise pricing is custom and negotiated annually with the sales team. Enterprise accounts get custom rate limits, unlimited webhook endpoints, mutual TLS authentication, and immediate data purge on request.",
+        "bm25": 3.1604,
+        "cosine": 0.4374
+      },
+      {
+        "chunk_id": "authentication.md#c3",
+        "doc_id": "authentication.md",
+        "score": 0.9839,
+        "text": "## Mutual TLS\n\nMutual TLS (mTLS) is available as an additional authentication layer on the Enterprise plan only.",
+        "bm25": 2.2586,
+        "cosine": 0.3782
+      },
+      {
+        "chunk_id": "rate-limits.md#c1",
+        "doc_id": "rate-limits.md",
+        "score": 0.9683,
+        "text": "## Limits by plan\n\n- Free: 60 requests per minute\n- Pro: 600 requests per minute\n- Enterprise: custom, set in the contract\n\nShort bursts of up to 2x the per-minute limit are tolerated for at most 10 seconds.",
+        "bm25": 1.7696,
+        "cosine": 0.3638
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 10,
+    "question": "If my webhook endpoint is down, how long will you keep retrying?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "webhooks.md#c2",
+        "doc_id": "webhooks.md",
+        "score": 0.9841,
+        "text": "## Delivery and retries\n\nYour endpoint must respond with a 2xx status code within 10 seconds. Any other response, or a timeout, counts as a failed delivery. Failed deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed and the endpoint is disabled if it has failed every delivery for 3 consecutive days.",
+        "bm25": 2.4191,
+        "cosine": 0.5489
+      },
+      {
+        "chunk_id": "webhooks.md#c1",
+        "doc_id": "webhooks.md",
+        "score": 0.9685,
+        "text": "## Signature verification\n\nEvery webhook request includes a `Nimbus-Signature` header containing an HMAC-SHA256 signature of the raw request body, computed with your endpoint's signing secret. Verify the signature before trusting the payload. Requests also carry a `Nimbus-Timestamp` header; reject any delivery whose timestamp is more than 5 minutes old to prevent replay attacks.",
+        "bm25": 2.8518,
+        "cosine": 0.3697
+      },
+      {
+        "chunk_id": "webhooks.md#c3",
+        "doc_id": "webhooks.md",
+        "score": 0.9472,
+        "text": "## Delivery logs\n\nWebhook delivery logs, including request payloads, response codes, and timing, are retained for 30 days and can be viewed in the dashboard. Failed events can be replayed manually from the dashboard while their log entry still exists.",
+        "bm25": 1.5803,
+        "cosine": 0.4078
+      }
+    ],
+    "gate": null
+  },
+  {
+    "id": 11,
+    "question": "asdkjh qwerty zxcv ???",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "authentication.md#c0",
+        "doc_id": "authentication.md",
+        "score": 0.9841,
+        "text": "# Authentication\n\nAll API requests must be authenticated and sent over HTTPS. Requests over plain HTTP are rejected.",
+        "bm25": 0,
+        "cosine": 0.0923
+      },
+      {
+        "chunk_id": "authentication.md#c4",
+        "doc_id": "authentication.md",
+        "score": 0.9612,
+        "text": "## Unsupported methods\n\nHTTP Basic authentication and passing API keys as query string parameters are not supported.",
+        "bm25": 0,
+        "cosine": 0.1202
+      },
+      {
+        "chunk_id": "authentication.md#c1",
+        "doc_id": "authentication.md",
+        "score": 0.9472,
+        "text": "## API keys\n\nAPI keys are the primary authentication method. Send the key in the `Authorization` header using the Bearer scheme: `Authorization: Bearer <api_key>`. Keys are created in the dashboard and are shown only once at creation. Each account can hold up to 10 active keys. Keys should be rotated at least every 90 days.",
+        "bm25": 0,
+        "cosine": 0.0775
+      }
+    ],
+    "gate": "NO_RELEVANT_CONTEXT"
+  },
+  {
+    "id": 12,
+    "question": "   ",
+    "retrieved_chunks": [],
+    "gate": "INVALID_QUESTION"
+  },
+  {
+    "id": 13,
+    "question": "What is the meaning of life?",
+    "retrieved_chunks": [
+      {
+        "chunk_id": "authentication.md#c1",
+        "doc_id": "authentication.md",
+        "score": 0.9839,
+        "text": "## API keys\n\nAPI keys are the primary authentication method. Send the key in the `Authorization` header using the Bearer scheme: `Authorization: Bearer <api_key>`. Keys are created in the dashboard and are shown only once at creation. Each account can hold up to 10 active keys. Keys should be rotated at least every 90 days.",
+        "bm25": 0,
+        "cosine": 0.0779
+      },
+      {
+        "chunk_id": "data-retention.md#c1",
+        "doc_id": "data-retention.md",
+        "score": 0.9485,
+        "text": "## What we retain\n\nCustomer records you store through the API are retained for as long as your account is active. API request logs are retained for 90 days. Aggregated usage metrics are retained for 13 months for billing purposes.",
+        "bm25": 0,
+        "cosine": 0.0961
+      },
+      {
+        "chunk_id": "data-retention.md#c0",
+        "doc_id": "data-retention.md",
+        "score": 0.9318,
+        "text": "# Data Retention and Deletion",
+        "bm25": 0,
+        "cosine": 0.0693
+      }
+    ],
+    "gate": "NO_RELEVANT_CONTEXT"
+  }
+]
