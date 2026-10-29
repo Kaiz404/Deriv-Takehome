@@ -3,7 +3,7 @@ import { mkdtemp, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { DOCS_DIR, MAX_QUESTION_CHARS } from "../src/config.ts";
+import { MAX_QUESTION_CHARS } from "../src/config.ts";
 import { classifyQuestion, loadDocuments, loadQuestions } from "../src/stages/load.ts";
 import { PipelineError } from "../src/types.ts";
 
@@ -30,10 +30,10 @@ test("classifyQuestion", () => {
   assert.equal(classifyQuestion("What is the rate limit?"), null);
 });
 
-test("loadDocuments: real docs", async () => {
-  const docs = await loadDocuments(DOCS_DIR);
-  assert.equal(docs.length, 6);
-  assert.ok(docs.some((d) => d.doc_id === "changelog.txt" && d.path === "docs/changelog.txt"));
+test("loadDocuments: fixture dir returns sorted posix doc_ids", async () => {
+  const docs = await loadDocuments("test/fixtures/docs");
+  assert.deepEqual(docs.map((d) => d.doc_id), ["a.md", "sub/b.txt"]);
+  assert.ok(docs.every((d) => !d.path.includes("\\") && d.text.length > 0));
 });
 
 test("loadDocuments: dir without md/txt throws", async () => {
