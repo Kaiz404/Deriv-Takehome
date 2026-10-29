@@ -2,6 +2,10 @@
 
 A small pipeline that answers questions about the Nimbus developer docs in `docs/`. Every answer is grounded in retrieved chunks, cites chunk ids, and is checked by deterministic validators before it is exported.
 
+## Requirements
+
+Node >= 22 and an OpenAI API key.
+
 ## Setup
 
 ```
@@ -11,7 +15,9 @@ npm start               # runs the pipeline, writes artifacts/
 npm test                # unit tests + artifact checks (run npm start first)
 ```
 
-Without `OPENAI_API_KEY`, `npm start` prints `OPENAI_API_KEY is required. Copy .env.example to .env.` and exits 1 before writing anything. `npm test` fails with "run npm start first" if `artifacts/` is missing.
+`.env` is loaded in code, so no shell flags are needed. Set `OPENAI_MODEL` and `OPENAI_EMBED_MODEL` to override the defaults (`gpt-6-luna`, `text-embedding-3-small`).
+
+Without `OPENAI_API_KEY`, `npm start` refuses to run at INIT: it prints `OPENAI_API_KEY is required. Copy .env.example to .env.` and exits 1 before writing anything. The committed `artifacts/` come from a real run, so the outputs can be inspected without a key. `npm test` fails with "run npm start first" if `artifacts/` is missing.
 
 ## Stages and artifacts
 
@@ -27,6 +33,10 @@ Without `OPENAI_API_KEY`, `npm start` prints `OPENAI_API_KEY is required. Copy .
 | CITATIONS_VALIDATED | `citation_validation.json` |
 | RESULTS_EXPORTED | `final_answers.json` |
 | VALIDATION_COMPLETE | re-checks all artifacts, prints the summary |
+
+Offsets (`start_char`, `end_char`) refer to the BOM-stripped, LF-normalized text, not the raw file bytes.
+
+Answer generation runs at most `GENERATION_CONCURRENCY = 5` calls at once (`src/config.ts`), preserving question order.
 
 Every OpenAI call is appended to `artifacts/llm_calls.jsonl`.
 
@@ -56,7 +66,7 @@ A question passes when it has no error-severity issue.
 
 ## Downgrade behavior
 
-If validation fails, `final_answers.json` replaces the answer with the canonical unsupported sentence, `supported: false`, no citations, and `downgraded: true`. `answers.json` keeps the raw model output for audit. Validation failures are expected data and do not change the exit code.
+If validation fails, `final_answers.json` replaces the answer with the canonical unsupported sentence, `supported: false`, no citations, and `downgraded: true`. `answers.json` is the raw model output, kept for audit; the citation rules are enforced on `final_answers.json`, where failures downgrade. Validation failures are expected data and do not change the exit code.
 
 ## Failure handling
 

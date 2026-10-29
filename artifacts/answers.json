@@ -2,11 +2,11 @@
   {
     "id": 1,
     "question": "What authentication methods does the API support?",
-    "answer": "API keys are the primary authentication method; send them in the `Authorization` header using the Bearer scheme. HTTP Basic authentication and API keys passed as query parameters are not supported.",
+    "answer": "The API supports API keys using the Bearer scheme and OAuth 2.0 client credentials for server-to-server integrations. Mutual TLS is available as an additional authentication layer on the Enterprise plan; HTTP Basic authentication and API keys in query parameters are not supported.",
     "supported": true,
     "citations": [
-      "authentication.md#c1",
-      "authentication.md#c4"
+      "authentication.md#c0",
+      "authentication.md#c1"
     ],
     "gate": null,
     "generation_issue": null
@@ -17,7 +17,7 @@
     "answer": "Webhook delivery logs are retained for 30 days.",
     "supported": true,
     "citations": [
-      "webhooks.md#c3"
+      "webhooks.md#c1"
     ],
     "gate": null,
     "generation_issue": null
@@ -25,10 +25,10 @@
   {
     "id": 3,
     "question": "Is there a free plan for startups?",
-    "answer": "Yes. The Free plan costs $0 per month and is available to startups; it includes 10,000 API requests per month, with no credit card required. There is no separate startup plan or discount program.",
+    "answer": "Yes. The Free plan costs $0 per month and is available to startups; it includes 10,000 API requests per month and requires no credit card. There is no separate startup plan or discount program.",
     "supported": true,
     "citations": [
-      "pricing.md#c1"
+      "pricing.md#c0"
     ],
     "gate": null,
     "generation_issue": null
@@ -36,10 +36,10 @@
   {
     "id": 4,
     "question": "What happens if I exceed the rate limit?",
-    "answer": "The API rejects the request with HTTP 429 Too Many Requests and includes a `Retry-After` header stating how many seconds to wait. Rejected requests do not count against the monthly quota; if a key keeps exceeding its limit continuously for more than 15 minutes, it is temporarily blocked for 1 hour and the account owner is notified by email.",
+    "answer": "The API rejects the request with HTTP 429 Too Many Requests and includes a `Retry-After` header specifying how many seconds to wait; rejected requests do not count against the monthly quota. If a key continuously exceeds its limit for more than 15 minutes, it is temporarily blocked for 1 hour and the account owner is notified by email. Responses also include rate-limit headers to help clients throttle requests.",
     "supported": true,
     "citations": [
-      "rate-limits.md#c2"
+      "rate-limits.md#c1"
     ],
     "gate": null,
     "generation_issue": null
@@ -47,10 +47,11 @@
   {
     "id": 5,
     "question": "Can I delete customer data immediately on request?",
-    "answer": "On Free and Pro, a customer record is removed from the live database immediately, but fully purged from all systems, including backups, within 30 days. Immediate permanent deletion, including from backups, is available only on Enterprise using `purge=true`; requests on other plans are rejected with HTTP 403.",
+    "answer": "On Free and Pro, a customer record is removed from the live database immediately, but is fully purged from all systems, including backups, within 30 days. Immediate permanent deletion, including backups, is available only on Enterprise with `purge=true`; requests on other plans are rejected with HTTP 403.",
     "supported": true,
     "citations": [
-      "data-retention.md#c2"
+      "data-retention.md#c0",
+      "pricing.md#c1"
     ],
     "gate": null,
     "generation_issue": null
@@ -70,8 +71,7 @@
     "answer": "The Pro plan allows 600 requests per minute.",
     "supported": true,
     "citations": [
-      "rate-limits.md#c1",
-      "pricing.md#c2"
+      "rate-limits.md#c0"
     ],
     "gate": null,
     "generation_issue": null
@@ -79,10 +79,10 @@
   {
     "id": 8,
     "question": "How do I check that a webhook call really came from Nimbus?",
-    "answer": "Verify the `Nimbus-Signature` header by computing an HMAC-SHA256 signature of the raw request body with your endpoint’s signing secret and comparing it with the provided signature. Also reject deliveries whose `Nimbus-Timestamp` is more than 5 minutes old to prevent replay attacks.",
+    "answer": "Verify the `Nimbus-Signature` header by checking the HMAC-SHA256 signature of the raw request body using your endpoint’s signing secret. Also reject deliveries whose `Nimbus-Timestamp` is more than 5 minutes old to prevent replay attacks.",
     "supported": true,
     "citations": [
-      "webhooks.md#c1"
+      "webhooks.md#c0"
     ],
     "gate": null,
     "generation_issue": null
@@ -99,10 +99,10 @@
   {
     "id": 10,
     "question": "If my webhook endpoint is down, how long will you keep retrying?",
-    "answer": "Failed deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed; the endpoint is disabled if it has failed every delivery for 3 consecutive days.",
+    "answer": "Failed webhook deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed; if the endpoint fails every delivery for 3 consecutive days, it is disabled.",
     "supported": true,
     "citations": [
-      "webhooks.md#c2"
+      "webhooks.md#c1"
     ],
     "gate": null,
     "generation_issue": null
