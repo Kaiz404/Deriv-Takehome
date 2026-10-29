@@ -1,0 +1,15 @@
+[
+  { "id": 1, "question": "What authentication methods does the API support?" },
+  { "id": 2, "question": "How long are webhook delivery logs retained?" },
+  { "id": 3, "question": "Is there a free plan for startups?" },
+  { "id": 4, "question": "What happens if I exceed the rate limit?" },
+  { "id": 5, "question": "Can I delete customer data immediately on request?" },
+  { "id": 6, "question": "Does the platform support GraphQL subscriptions?" },
+  { "id": 7, "question": "How many requests per minute does the Pro plan allow?" },
+  { "id": 8, "question": "How do I check that a webhook call really came from Nimbus?" },
+  { "id": 9, "question": "Is there an SLA guaranteeing 99.99% uptime on Enterprise?" },
+  { "id": 10, "question": "If my webhook endpoint is down, how long will you keep retrying?" },
+  { "id": 11, "question": "asdkjh qwerty zxcv ???" },
+  { "id": 12, "question": "   " },
+  { "id": 13, "question": "What is the meaning of life?" }
+]

@@ -1,0 +1,13 @@
+Nimbus API changelog
+
+2026-09-15 - v2.4
+Added the customer.deleted webhook event. Webhook payloads now include an event_version field.
+
+2026-07-02 - v2.3
+Raised the Pro plan rate limit from 300 to 600 requests per minute. Free plan limits are unchanged.
+
+2026-04-20 - v2.2
+Introduced Server-Sent Events streaming for job status at GET /v1/jobs/{id}/events. Streams close automatically after 30 minutes.
+
+2026-01-10 - v2.1
+Deprecated API keys passed in query strings. They stopped working on 2026-03-01.
