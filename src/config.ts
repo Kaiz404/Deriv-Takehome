@@ -3,7 +3,6 @@ export const TOP_K = 3;
 export const RRF_K = 60;
 export const BM25_K1 = 1.5;
 export const BM25_B = 0.75;
-export const CHAT_MODEL = process.env.OPENAI_MODEL || "gpt-6-luna";
 export const EMBED_MODEL = process.env.OPENAI_EMBED_MODEL || "text-embedding-3-small";
 export const GENERATION_CONCURRENCY = 5;
 export const EMBED_BATCH = 100;

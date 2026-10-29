@@ -81,6 +81,8 @@ export type Answer = ModelAnswer & {
   question: string;
   gate: Gate;
   generation_issue: Issue | null;
+  /** The chat model that produced this answer; null when no model answered. */
+  model: string | null;
 };
 
 export type ValidationResult = { id: QuestionId; passed: boolean; issues: Issue[] };

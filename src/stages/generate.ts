@@ -1,6 +1,7 @@
-import { CHAT_MODEL, SEED, UNSUPPORTED_ANSWER } from "../config.ts";
+import { SEED, UNSUPPORTED_ANSWER } from "../config.ts";
 import { ARTIFACTS } from "../io.ts";
 import { logCall, openai } from "../llm.ts";
+import { withModelFallback } from "../models.ts";
 import { ModelAnswerSchema } from "../types.ts";
 import type { Answer, Issue, RetrievalResult } from "../types.ts";
 
@@ -41,7 +42,7 @@ const RESPONSE_FORMAT = {
   },
 } as const;
 
-function fallback(r: RetrievalResult, issue: Issue): Answer {
+function fallback(r: RetrievalResult, issue: Issue, model: string | null = null): Answer {
   return {
     id: r.id,
     question: r.question,
@@ -50,6 +51,7 @@ function fallback(r: RetrievalResult, issue: Issue): Answer {
     citations: [],
     gate: r.gate,
     generation_issue: issue,
+    model,
   };
 }
 
@@ -60,23 +62,20 @@ export async function generateAnswer(r: RetrievalResult): Promise<Answer> {
   }
   const messages = buildMessages(r);
   try {
-    await logCall({
-      stage: "answer_generation",
-      model: CHAT_MODEL,
-      question_id: r.id,
-      prompt: messages,
-      input_artifacts: [ARTIFACTS.retrieval],
-      output_artifact: ARTIFACTS.answers,
-    });
-    // No temperature: the model rejects anything but the default.
-    const res = await openai().chat.completions.create({
-      model: CHAT_MODEL,
-      seed: SEED,
-      messages,
-      response_format: RESPONSE_FORMAT,
+    const { model, result: res } = await withModelFallback(async (model) => {
+      await logCall({
+        stage: "answer_generation",
+        model,
+        question_id: r.id,
+        prompt: messages,
+        input_artifacts: [ARTIFACTS.retrieval],
+        output_artifact: ARTIFACTS.answers,
+      });
+      // No temperature: the luna models reject anything but the default.
+      return openai().chat.completions.create({ model, seed: SEED, messages, response_format: RESPONSE_FORMAT });
     });
     const message = res.choices[0]?.message;
-    const invalid = (detail: string) => fallback(r, { code: "MODEL_OUTPUT_INVALID", severity: "error", detail });
+    const invalid = (detail: string) => fallback(r, { code: "MODEL_OUTPUT_INVALID", severity: "error", detail }, model);
     if (message?.refusal) return invalid(`Model refused: ${message.refusal}`);
     let parsed;
     try {
@@ -85,7 +84,7 @@ export async function generateAnswer(r: RetrievalResult): Promise<Answer> {
       return invalid(`Model output is not valid JSON: ${(err as Error).message}`);
     }
     if (!parsed.success) return invalid(`Model output failed schema: ${parsed.error.message}`);
-    return { id: r.id, question: r.question, ...parsed.data, gate: null, generation_issue: null };
+    return { id: r.id, question: r.question, ...parsed.data, gate: null, generation_issue: null, model };
   } catch (err) {
     return fallback(r, { code: "LLM_CALL_FAILED", severity: "error", detail: err instanceof Error ? err.message : String(err) });
   }

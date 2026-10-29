@@ -19,7 +19,7 @@
         "text": "## Mutual TLS\n\nMutual TLS (mTLS) is available as an additional authentication layer on the Enterprise plan only.\n\n## Unsupported methods\n\nHTTP Basic authentication and passing API keys as query string parameters are not supported.",
         "heading": "Mutual TLS",
         "bm25": 5.9096,
-        "cosine": 0.4974
+        "cosine": 0.4972
       },
       {
         "chunk_id": "rate-limits.md#c0",
@@ -44,7 +44,7 @@
         "text": "## Delivery and retries\n\nYour endpoint must respond with a 2xx status code within 10 seconds. Any other response, or a timeout, counts as a failed delivery. Failed deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed and the endpoint is disabled if it has failed every delivery for 3 consecutive days.\n\n## Delivery logs\n\nWebhook delivery logs, including request payloads, response codes, and timing, are retained for 30 days and can be viewed in the dashboard. Failed events can be replayed manually from the dashboard while their log entry still exists.",
         "heading": "Delivery and retries",
         "bm25": 7.7398,
-        "cosine": 0.6112
+        "cosine": 0.6114
       },
       {
         "chunk_id": "data-retention.md#c0",
@@ -53,7 +53,7 @@
         "text": "# Data Retention and Deletion\n\n## What we retain\n\nCustomer records you store through the API are retained for as long as your account is active. API request logs are retained for 90 days. Aggregated usage metrics are retained for 13 months for billing purposes.\n\n## Deletion requests\n\nYou can delete a customer record with `DELETE /v1/customers/{id}`. On Free and Pro plans, the record is removed from the live database immediately but is fully purged from all systems, including backups, within 30 days.\n\nImmediate permanent deletion, including removal from backups, is only available on the Enterprise plan by adding the `purge=true` query parameter. Purge requests on other plans are rejected with HTTP 403.",
         "heading": "Data Retention and Deletion",
         "bm25": 5.9378,
-        "cosine": 0.397
+        "cosine": 0.3969
       },
       {
         "chunk_id": "webhooks.md#c0",
@@ -62,7 +62,7 @@
         "text": "# Webhooks\n\nWebhooks notify your server when events happen in your Nimbus account, such as `job.completed`, `job.failed`, and `customer.deleted`.\n\n## Signature verification\n\nEvery webhook request includes a `Nimbus-Signature` header containing an HMAC-SHA256 signature of the raw request body, computed with your endpoint's signing secret. Verify the signature before trusting the payload. Requests also carry a `Nimbus-Timestamp` header; reject any delivery whose timestamp is more than 5 minutes old to prevent replay attacks.",
         "heading": "Webhooks",
         "bm25": 2.5165,
-        "cosine": 0.4552
+        "cosine": 0.4554
       }
     ],
     "gate": null
@@ -78,7 +78,7 @@
         "text": "# Pricing\n\nNimbus API offers three plans. All prices are in USD and billed monthly.\n\n## Free plan\n\nThe Free plan costs $0 per month and is available to any individual or company, including startups. It includes 10,000 API requests per month and a rate limit of 60 requests per minute. Webhooks are limited to 3 endpoints. No credit card is required to sign up.\n\nThere is no separate plan or discount program specifically for startups. Startups that outgrow the Free plan move to the Pro plan like any other customer.\n\n## Pro plan\n\nThe Pro plan costs $49 per month. It includes 500,000 API requests per month and a rate limit of 600 requests per minute. Requests above the monthly quota are billed as overage at $0.50 per 1,000 requests. Pro accounts can configure up to 25 webhook endpoints.",
         "heading": "Pricing",
         "bm25": 5.5446,
-        "cosine": 0.5675
+        "cosine": 0.5676
       },
       {
         "chunk_id": "pricing.md#c1",
@@ -87,7 +87,7 @@
         "text": "## Enterprise plan\n\nEnterprise pricing is custom and negotiated annually with the sales team. Enterprise accounts get custom rate limits, unlimited webhook endpoints, mutual TLS authentication, and immediate data purge on request.\n\n## Billing\n\nInvoices are issued on the first day of each month. Downgrading from Pro to Free takes effect at the end of the current billing period. Unused requests do not roll over to the next month.",
         "heading": "Enterprise plan",
         "bm25": 1.9919,
-        "cosine": 0.4599
+        "cosine": 0.4598
       },
       {
         "chunk_id": "rate-limits.md#c0",
@@ -96,7 +96,7 @@
         "text": "# API Rate Limits\n\nRate limits are applied per API key using a sliding one-minute window.\n\n## Limits by plan\n\n- Free: 60 requests per minute\n- Pro: 600 requests per minute\n- Enterprise: custom, set in the contract\n\nShort bursts of up to 2x the per-minute limit are tolerated for at most 10 seconds.",
         "heading": "API Rate Limits",
         "bm25": 1.7806,
-        "cosine": 0.274
+        "cosine": 0.2739
       }
     ],
     "gate": null
@@ -121,7 +121,7 @@
         "text": "# API Rate Limits\n\nRate limits are applied per API key using a sliding one-minute window.\n\n## Limits by plan\n\n- Free: 60 requests per minute\n- Pro: 600 requests per minute\n- Enterprise: custom, set in the contract\n\nShort bursts of up to 2x the per-minute limit are tolerated for at most 10 seconds.",
         "heading": "API Rate Limits",
         "bm25": 2.7591,
-        "cosine": 0.502
+        "cosine": 0.5019
       },
       {
         "chunk_id": "pricing.md#c0",
@@ -146,7 +146,7 @@
         "text": "# Data Retention and Deletion\n\n## What we retain\n\nCustomer records you store through the API are retained for as long as your account is active. API request logs are retained for 90 days. Aggregated usage metrics are retained for 13 months for billing purposes.\n\n## Deletion requests\n\nYou can delete a customer record with `DELETE /v1/customers/{id}`. On Free and Pro plans, the record is removed from the live database immediately but is fully purged from all systems, including backups, within 30 days.\n\nImmediate permanent deletion, including removal from backups, is only available on the Enterprise plan by adding the `purge=true` query parameter. Purge requests on other plans are rejected with HTTP 403.",
         "heading": "Data Retention and Deletion",
         "bm25": 8.194,
-        "cosine": 0.6305
+        "cosine": 0.6306
       },
       {
         "chunk_id": "data-retention.md#c1",
@@ -164,7 +164,7 @@
         "text": "## Enterprise plan\n\nEnterprise pricing is custom and negotiated annually with the sales team. Enterprise accounts get custom rate limits, unlimited webhook endpoints, mutual TLS authentication, and immediate data purge on request.\n\n## Billing\n\nInvoices are issued on the first day of each month. Downgrading from Pro to Free takes effect at the end of the current billing period. Unused requests do not roll over to the next month.",
         "heading": "Enterprise plan",
         "bm25": 2.1884,
-        "cosine": 0.2497
+        "cosine": 0.2498
       }
     ],
     "gate": null
@@ -189,7 +189,7 @@
         "text": "## Mutual TLS\n\nMutual TLS (mTLS) is available as an additional authentication layer on the Enterprise plan only.\n\n## Unsupported methods\n\nHTTP Basic authentication and passing API keys as query string parameters are not supported.",
         "heading": "Mutual TLS",
         "bm25": 0,
-        "cosine": 0.2583
+        "cosine": 0.2582
       },
       {
         "chunk_id": "pricing.md#c0",
@@ -248,7 +248,7 @@
         "text": "# Webhooks\n\nWebhooks notify your server when events happen in your Nimbus account, such as `job.completed`, `job.failed`, and `customer.deleted`.\n\n## Signature verification\n\nEvery webhook request includes a `Nimbus-Signature` header containing an HMAC-SHA256 signature of the raw request body, computed with your endpoint's signing secret. Verify the signature before trusting the payload. Requests also carry a `Nimbus-Timestamp` header; reject any delivery whose timestamp is more than 5 minutes old to prevent replay attacks.",
         "heading": "Webhooks",
         "bm25": 3.0535,
-        "cosine": 0.6569
+        "cosine": 0.6567
       },
       {
         "chunk_id": "changelog.txt#c0",
@@ -257,7 +257,7 @@
         "text": "Nimbus API changelog\n\n2026-09-15 - v2.4\nAdded the customer.deleted webhook event. Webhook payloads now include an event_version field.\n\n2026-07-02 - v2.3\nRaised the Pro plan rate limit from 300 to 600 requests per minute. Free plan limits are unchanged.\n\n2026-04-20 - v2.2\nIntroduced Server-Sent Events streaming for job status at GET /v1/jobs/{id}/events. Streams close automatically after 30 minutes.\n\n2026-01-10 - v2.1\nDeprecated API keys passed in query strings. They stopped working on 2026-03-01.",
         "heading": "",
         "bm25": 2.2877,
-        "cosine": 0.4673
+        "cosine": 0.467
       },
       {
         "chunk_id": "pricing.md#c0",
@@ -266,7 +266,7 @@
         "text": "# Pricing\n\nNimbus API offers three plans. All prices are in USD and billed monthly.\n\n## Free plan\n\nThe Free plan costs $0 per month and is available to any individual or company, including startups. It includes 10,000 API requests per month and a rate limit of 60 requests per minute. Webhooks are limited to 3 endpoints. No credit card is required to sign up.\n\nThere is no separate plan or discount program specifically for startups. Startups that outgrow the Free plan move to the Pro plan like any other customer.\n\n## Pro plan\n\nThe Pro plan costs $49 per month. It includes 500,000 API requests per month and a rate limit of 600 requests per minute. Requests above the monthly quota are billed as overage at $0.50 per 1,000 requests. Pro accounts can configure up to 25 webhook endpoints.",
         "heading": "Pricing",
         "bm25": 1.6285,
-        "cosine": 0.4021
+        "cosine": 0.402
       }
     ],
     "gate": null
@@ -325,7 +325,7 @@
         "text": "# Webhooks\n\nWebhooks notify your server when events happen in your Nimbus account, such as `job.completed`, `job.failed`, and `customer.deleted`.\n\n## Signature verification\n\nEvery webhook request includes a `Nimbus-Signature` header containing an HMAC-SHA256 signature of the raw request body, computed with your endpoint's signing secret. Verify the signature before trusting the payload. Requests also carry a `Nimbus-Timestamp` header; reject any delivery whose timestamp is more than 5 minutes old to prevent replay attacks.",
         "heading": "Webhooks",
         "bm25": 2.179,
-        "cosine": 0.3996
+        "cosine": 0.3998
       },
       {
         "chunk_id": "rate-limits.md#c1",
@@ -368,7 +368,7 @@
         "text": "## Account closure\n\nWhen an account is closed, all customer data is deleted within 30 days. Backups are rotated every 35 days, so residual copies in backups are gone no later than 35 days after closure.",
         "heading": "Account closure",
         "bm25": 0,
-        "cosine": 0.1377
+        "cosine": 0.1376
       }
     ],
     "gate": "NO_RELEVANT_CONTEXT"

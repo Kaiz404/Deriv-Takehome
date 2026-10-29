@@ -15,7 +15,7 @@ npm start               # runs the pipeline, writes artifacts/
 npm test                # unit tests + artifact checks (run npm start first)
 ```
 
-`.env` is loaded in code, so no shell flags are needed. Set `OPENAI_MODEL` and `OPENAI_EMBED_MODEL` to override the defaults (`gpt-6-luna`, `text-embedding-3-small`).
+`.env` is loaded in code, so no shell flags are needed. Chat models are tried in order `gpt-6-luna`, `gpt-5.6-luna`, `gpt-4.1-mini` (see `src/models.ts`); set `OPENAI_MODELS=a,b,c` to replace the chain and `OPENAI_EMBED_MODEL` to replace `text-embedding-3-small`. Each answer records the `model` that produced it.
 
 Without `OPENAI_API_KEY`, `npm start` refuses to run at INIT: it prints `OPENAI_API_KEY is required. Copy .env.example to .env.` and exits 1 before writing anything. The committed `artifacts/` come from a real run, so the outputs can be inspected without a key. `npm test` fails with "run npm start first" if `artifacts/` is missing.
 

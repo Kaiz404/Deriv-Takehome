@@ -22,6 +22,7 @@ const answer = (over: Partial<Answer>): Answer => ({
   citations: ["d.md#c0"],
   gate: null,
   generation_issue: null,
+  model: null,
   ...over,
 });
 
