@@ -81,5 +81,10 @@
         "detail": "Gate NO_RELEVANT_CONTEXT: LLM call skipped."
       }
     ]
+  },
+  {
+    "id": 14,
+    "passed": true,
+    "issues": []
   }
 ]

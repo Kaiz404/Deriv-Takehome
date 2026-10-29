@@ -259,3 +259,15 @@ Done when: `rm -rf artifacts && npm start && npm test` passes from a clean check
 5. `validate.ts` + validator unit tests (8 min).
 6. `pipeline.ts` runner, export, `checkArtifacts`, summary (5 min).
 7. README, then the clean-checkout run (4 min).
+
+## As built (changes after review)
+
+The implementation differs from the sections above in these places. README.md describes the current behavior.
+
+- **Chunking:** after the per-section pass, a chunk that starts a new section is merged into the previous chunk when both fit in `CHUNK_SIZE`. Reason: Q1 retrieved only 1 of 3 auth methods because 112-char sections each took a top-3 slot. Sample docs went from 23 to 12 chunks.
+- **Prompt:** each context chunk is rendered with its heading, so `RetrievedChunk` carries `heading`.
+- **Models:** `src/models.ts` tries `gpt-6-luna`, `gpt-5.6-luna`, `gpt-4.1-mini` in order (`OPENAI_MODELS` overrides). 400/403/404 marks a model unavailable for the run; 429, 5xx and connection errors try the next model; 401 is fatal. `Answer` records the `model` that answered, and each attempt is logged before it is sent.
+- **Runtime:** `.env` is loaded in code (`src/env.ts`); Node >= 22 because the test glob needs it. `npm run verify` runs typecheck, pipeline and tests.
+- **INIT:** `questions.json` is validated before any API call.
+- **Generation:** at most `GENERATION_CONCURRENCY = 5` calls at once.
+- **Checks:** `checkArtifacts` also matches `citation_validation.json` ids to question ids.

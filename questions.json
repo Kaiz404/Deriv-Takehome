@@ -5,11 +5,24 @@
   { "id": 4, "question": "What happens if I exceed the rate limit?" },
   { "id": 5, "question": "Can I delete customer data immediately on request?" },
   { "id": 6, "question": "Does the platform support GraphQL subscriptions?" },
-  { "id": 7, "question": "How many requests per minute does the Pro plan allow?" },
-  { "id": 8, "question": "How do I check that a webhook call really came from Nimbus?" },
-  { "id": 9, "question": "Is there an SLA guaranteeing 99.99% uptime on Enterprise?" },
-  { "id": 10, "question": "If my webhook endpoint is down, how long will you keep retrying?" },
+  {
+    "id": 7,
+    "question": "How many requests per minute does the Pro plan allow?"
+  },
+  {
+    "id": 8,
+    "question": "How do I check that a webhook call really came from Nimbus?"
+  },
+  {
+    "id": 9,
+    "question": "Is there an SLA guaranteeing 99.99% uptime on Enterprise?"
+  },
+  {
+    "id": 10,
+    "question": "If my webhook endpoint is down, how long will you keep retrying?"
+  },
   { "id": 11, "question": "asdkjh qwerty zxcv ???" },
   { "id": 12, "question": "   " },
-  { "id": 13, "question": "What is the meaning of life?" }
+  { "id": 13, "question": "What is the meaning of life?" },
+  { "id": 14, "question": "can you tell me about the API?" }
 ]

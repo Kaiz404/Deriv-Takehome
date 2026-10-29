@@ -1,80 +1,66 @@
 # Nimbus RAG assistant
 
-A small pipeline that answers questions about the Nimbus developer docs in `docs/`. Every answer is grounded in retrieved chunks, cites chunk ids, and is checked by deterministic validators before it is exported.
+Answers questions from the docs in `docs/` with cited, validated answers. TypeScript, no framework, no vector DB.
 
-## Requirements
+## Run
 
-Node >= 22 and an OpenAI API key.
+Requires Node >= 22 and an OpenAI API key.
 
-## Setup
-
-```
+```sh
 npm install
-cp .env.example .env    # set OPENAI_API_KEY
-npm start               # runs the pipeline, writes artifacts/
-npm test                # unit tests + artifact checks (run npm start first)
+cp .env.example .env     # set OPENAI_API_KEY
+npm run verify           # typecheck + full pipeline + tests
 ```
 
-`.env` is loaded in code, so no shell flags are needed. Chat models are tried in order `gpt-6-luna`, `gpt-5.6-luna`, `gpt-4.1-mini` (see `src/models.ts`); set `OPENAI_MODELS=a,b,c` to replace the chain and `OPENAI_EMBED_MODEL` to replace `text-embedding-3-small`. Each answer records the `model` that produced it.
-
-Without `OPENAI_API_KEY`, `npm start` refuses to run at INIT: it prints `OPENAI_API_KEY is required. Copy .env.example to .env.` and exits 1 before writing anything. The committed `artifacts/` come from a real run, so the outputs can be inspected without a key. `npm test` fails with "run npm start first" if `artifacts/` is missing.
-
-## Stages and artifacts
-
-| Stage | Artifact |
+| Command | What it does |
 |---|---|
-| INIT | resets `artifacts/` |
+| `npm start` | Runs the pipeline (~10s) from `docs/` and `questions.json`, writes `artifacts/`, prints a summary. |
+| `npm test` | Unit tests (no network) and checks on the current `artifacts/`. |
+| `npm run verify` | Both of the above, plus `tsc`. |
+
+Swap in your own `docs/` (`.md`/`.txt`) and `questions.json` (`[{ "id", "question" }]`) and rerun. Without a key, `npm start` exits at INIT; the committed `artifacts/` come from a real run.
+
+## Pipeline
+
+| Stage | Output in `artifacts/` |
+|---|---|
 | DOCUMENTS_LOADED | `documents.json` |
-| CHUNKS_CREATED | `chunks.json` |
-| INDEX_BUILT | `index.json` (BM25 stats + embeddings) |
-| QUESTIONS_LOADED | none (query embeddings stay in memory) |
-| RETRIEVAL_COMPLETE | `retrieval_results.json` |
-| ANSWERS_GENERATED | `answers.json` (raw model output) |
+| CHUNKS_CREATED | `chunks.json`: heading/paragraph chunks, `CHUNK_SIZE = 800`; small adjacent sections are merged |
+| INDEX_BUILT | `index.json`: BM25 stats + `text-embedding-3-small` vectors |
+| RETRIEVAL_COMPLETE | `retrieval_results.json`: top 3 by BM25 + cosine, fused with Reciprocal Rank Fusion |
+| ANSWERS_GENERATED | `answers.json`: raw model output, including which `model` answered |
 | CITATIONS_VALIDATED | `citation_validation.json` |
-| RESULTS_EXPORTED | `final_answers.json` |
-| VALIDATION_COMPLETE | re-checks all artifacts, prints the summary |
+| RESULTS_EXPORTED | `final_answers.json`: answer, citations, retrieved ids, validation |
+| VALIDATION_COMPLETE | re-checks every artifact; exits 1 if an invariant breaks |
 
-Offsets (`start_char`, `end_char`) refer to the BOM-stripped, LF-normalized text, not the raw file bytes.
+Every OpenAI call is logged to `llm_calls.jsonl`.
 
-Answer generation runs at most `GENERATION_CONCURRENCY = 5` calls at once (`src/config.ts`), preserving question order.
+**Models.** Chat models are tried in order: `gpt-6-luna`, `gpt-5.6-luna`, `gpt-4.1-mini` (`src/models.ts`). 400/403/404 skips a model for the rest of the run; 429, 5xx and network errors move to the next model after the SDK's retries; 401 stops. Override with `OPENAI_MODELS=a,b,c` and `OPENAI_EMBED_MODEL`.
 
-Every OpenAI call is appended to `artifacts/llm_calls.jsonl`.
+**Gate.** Questions that are empty, symbol-only, over 2000 chars, or whose best chunk cosine is below `MIN_RELEVANCE = 0.20` skip the model and get the canonical unsupported answer. On the sample docs, junk scores ≤ 0.18 and real questions ≥ 0.30.
 
-## Design choices
+## Validation
 
-- **Retrieval:** BM25 and embedding cosine, fused with Reciprocal Rank Fusion, top 3, all in memory. BM25 catches exact tokens such as `429`; embeddings catch paraphrases. The corpus is tiny, so there is no vector DB.
-- **Chunking:** split at markdown headings, then paragraphs, merged up to `CHUNK_SIZE = 800` characters (`src/config.ts`). Chunks follow the doc structure, so a fact and its heading stay together.
-- **Gibberish gate:** if the best cosine over all chunks is below `MIN_RELEVANCE = 0.20`, the LLM is skipped and the canonical unsupported answer is returned. The threshold was measured on the sample fixtures: gibberish and off-topic questions score 0.08-0.18, real-but-unanswerable ones 0.30-0.44, answerable ones 0.65+.
-
-## Validation rules
+Deterministic checks in `src/stages/validate.ts`. Any error replaces the final answer with *"The knowledge base does not provide enough information to answer this."*, `supported: false`, no citations, `downgraded: true`.
 
 | Code | Severity | Rule |
 |---|---|---|
-| `CITATION_NOT_RETRIEVED` | error | A cited id is not among the question's retrieved chunk ids. |
-| `SUPPORTED_WITHOUT_CITATION` | error | `supported` is true and `citations` is empty. |
-| `UNSUPPORTED_WITH_CITATION` | error | `supported` is false and `citations` is not empty. |
-| `UNGROUNDED_NUMBER` | error | A number in the answer is not in the cited chunks' text. |
-| `LOW_TERM_OVERLAP` | warning | Too few of the answer's content terms appear in the cited text. |
-| `MODEL_OUTPUT_INVALID` | error | The model output did not parse, or the model refused. |
-| `LLM_CALL_FAILED` | error | The API call failed after retries. |
-| `SUPPORTED_FLAG_MISMATCH` | error | `supported` is true but the answer says the knowledge base does not cover it. |
-| `NONCANONICAL_UNSUPPORTED` | warning | `supported` is false but the text is not the canonical sentence. |
-| `INVALID_QUESTION` | info | Empty, symbol-only or over-long question; the gate skipped retrieval and the LLM. |
-| `NO_RELEVANT_CONTEXT` | info | No chunk reached `MIN_RELEVANCE`; the LLM was skipped. |
+| `CITATION_NOT_RETRIEVED` | error | Cited id is not in this question's retrieved chunks |
+| `SUPPORTED_WITHOUT_CITATION` | error | `supported: true` with no citations |
+| `UNSUPPORTED_WITH_CITATION` | error | `supported: false` with citations |
+| `UNGROUNDED_NUMBER` | error | A number in the answer is not in the cited text (`1,000` = `1000`) |
+| `SUPPORTED_FLAG_MISMATCH` | error | `supported: true` but the answer says the knowledge base does not cover it |
+| `MODEL_OUTPUT_INVALID` | error | Output was not valid JSON for the schema, or the model refused |
+| `LLM_CALL_FAILED` | error | Every model in the chain failed |
+| `LOW_TERM_OVERLAP` | warning | Under half the answer's key terms appear in the cited text |
+| `NONCANONICAL_UNSUPPORTED` | warning | Unsupported answer not worded as the canonical sentence |
+| `INVALID_QUESTION`, `NO_RELEVANT_CONTEXT` | info | The gate skipped the model |
 
-A question passes when it has no error-severity issue.
+A broken input set (no key, no docs, invalid `questions.json`) stops the run with exit 1 and lists every problem. A broken single question only affects that question.
 
-## Downgrade behavior
+## Limitations
 
-If validation fails, `final_answers.json` replaces the answer with the canonical unsupported sentence, `supported: false`, no citations, and `downgraded: true`. `answers.json` is the raw model output, kept for audit; the citation rules are enforced on `final_answers.json`, where failures downgrade. Validation failures are expected data and do not change the exit code.
-
-## Failure handling
-
-If the input set is broken (no API key, no docs, bad `questions.json`, no chunks, failed embedding call), the run stops with exit 1 and lists every problem. If a single question is broken (invalid text, no relevant context, LLM error or bad output), that question gets the canonical unsupported answer and the run finishes.
-
-## Known limitations
-
-- `gpt-6-luna` has a fixed temperature, so answers vary from run to run.
-- Numbers written as words ("eight") are not checked.
-- The BM25 tokenizer and stopword list are English-only.
-- Prompt injection is mitigated (delimited chunks, strict JSON schema, validators), not eliminated.
+- `gpt-6-luna` only accepts the default temperature, so wording varies between runs; the validators are what keep answers grounded.
+- Numbers written as words are not checked. The tokenizer is English-only.
+- `MIN_RELEVANCE` was measured on the sample docs only.
+- Prompt injection is mitigated (delimited context, strict schema, validators), not eliminated.

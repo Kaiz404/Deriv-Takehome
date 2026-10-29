@@ -2,7 +2,7 @@
   {
     "id": 1,
     "question": "What authentication methods does the API support?",
-    "answer": "The API supports API keys via the `Authorization: Bearer <api_key>` header and OAuth 2.0 client credentials for server-to-server integrations. Mutual TLS is also available as an additional authentication layer on the Enterprise plan. HTTP Basic authentication and API keys in query parameters are not supported.",
+    "answer": "The API supports API keys using the Bearer scheme and OAuth 2.0 client credentials for server-to-server integrations. Mutual TLS is also available as an additional authentication layer on the Enterprise plan; HTTP Basic authentication and API keys passed as query parameters are not supported.",
     "supported": true,
     "citations": [
       "authentication.md#c0",
@@ -41,7 +41,7 @@
   {
     "id": 3,
     "question": "Is there a free plan for startups?",
-    "answer": "Yes. The Free plan costs $0 per month and is available to startups, with 10,000 API requests per month; there is no separate startup plan or discount program.",
+    "answer": "Yes. The Free plan costs $0 per month and is available to startups; it includes 10,000 API requests per month and requires no credit card. There is no separate startup plan or discount program.",
     "supported": true,
     "citations": [
       "pricing.md#c0"
@@ -60,7 +60,7 @@
   {
     "id": 4,
     "question": "What happens if I exceed the rate limit?",
-    "answer": "The API rejects the request with HTTP 429 Too Many Requests and includes a `Retry-After` header indicating how many seconds to wait; rejected requests do not count against the monthly quota. Every response also includes rate-limit headers, and if a key continuously exceeds its limit for more than 15 minutes, it is temporarily blocked for 1 hour and the account owner is notified by email.",
+    "answer": "The API rejects the request with HTTP 429 Too Many Requests and provides a `Retry-After` header indicating how many seconds to wait; rejected requests do not count against the monthly quota. If a key continuously exceeds its limit for more than 15 minutes, it is temporarily blocked for 1 hour and the account owner is notified by email. Responses also include rate-limit headers to help clients throttle requests.",
     "supported": true,
     "citations": [
       "rate-limits.md#c1"
@@ -79,7 +79,7 @@
   {
     "id": 5,
     "question": "Can I delete customer data immediately on request?",
-    "answer": "On the Enterprise plan, you can request immediate permanent deletion, including removal from backups, using `purge=true`. On Free and Pro, a record is removed from the live database immediately but fully purged within 30 days.",
+    "answer": "On Free and Pro, a customer record is removed from the live database immediately, but full deletion from all systems, including backups, can take up to 30 days. Immediate permanent deletion is available on Enterprise with the `purge=true` query parameter; purge requests on other plans are rejected.",
     "supported": true,
     "citations": [
       "data-retention.md#c0",
@@ -171,7 +171,7 @@
   {
     "id": 10,
     "question": "If my webhook endpoint is down, how long will you keep retrying?",
-    "answer": "Failed webhook deliveries are retried up to 8 times with exponential backoff over a period of 24 hours. After the final retry fails, the event is marked as failed; the endpoint is disabled if every delivery has failed for 3 consecutive days.",
+    "answer": "Failed deliveries are retried up to 8 times with exponential backoff over a period of 24 hours.",
     "supported": true,
     "citations": [
       "webhooks.md#c1"
@@ -249,6 +249,27 @@
           "detail": "Gate NO_RELEVANT_CONTEXT: LLM call skipped."
         }
       ]
+    },
+    "downgraded": false
+  },
+  {
+    "id": 14,
+    "question": "can you tell me about the API?",
+    "answer": "The API requires HTTPS and authentication, using a Bearer API key or OAuth 2.0 client credentials for server-to-server integrations. Rate limits are 60 requests per minute on Free and 600 on Pro; the Free plan is $0/month and includes 10,000 requests/month, while Pro is $49/month and includes 500,000 requests/month. The context does not describe the API’s specific functions or other endpoints.",
+    "supported": true,
+    "citations": [
+      "authentication.md#c0",
+      "rate-limits.md#c0",
+      "pricing.md#c0"
+    ],
+    "retrieved_chunk_ids": [
+      "rate-limits.md#c0",
+      "authentication.md#c0",
+      "pricing.md#c0"
+    ],
+    "validation": {
+      "passed": true,
+      "issues": []
     },
     "downgraded": false
   }
