@@ -1,4 +1,5 @@
-import { DOCS_DIR, QUESTIONS_PATH } from "./config.ts";
+import "./env.ts";
+import { DOCS_DIR, GENERATION_CONCURRENCY, QUESTIONS_PATH } from "./config.ts";
 import { checkArtifacts } from "./check.ts";
 import { ARTIFACTS, resetArtifacts, writeJson } from "./io.ts";
 import { embed } from "./llm.ts";
@@ -9,6 +10,7 @@ import { classifyQuestion, loadDocuments, loadQuestions } from "./stages/load.ts
 import { retrieve } from "./stages/retrieve.ts";
 import { enforce, validateAnswer } from "./stages/validate.ts";
 import { PipelineError } from "./types.ts";
+import type { Answer } from "./types.ts";
 
 const STAGES = [
   "INIT",
@@ -28,9 +30,10 @@ const stage = (name: Stage, note = "") => console.log(`[STAGE] ${name}${note ? `
 
 async function run(): Promise<void> {
   if (!process.env.OPENAI_API_KEY) {
-    console.error("OPENAI_API_KEY is required. Copy .env.example to .env.");
-    process.exit(1);
+    throw new PipelineError(["OPENAI_API_KEY is required. Copy .env.example to .env."]);
   }
+  // Validate early so a broken questions.json fails before artifacts are wiped.
+  await loadQuestions(QUESTIONS_PATH);
   await resetArtifacts();
   stage("INIT");
 
@@ -77,7 +80,10 @@ async function run(): Promise<void> {
   await writeJson(ARTIFACTS.retrieval, retrievals);
   stage("RETRIEVAL_COMPLETE");
 
-  const answers = await Promise.all(retrievals.map(generateAnswer));
+  const answers: Answer[] = [];
+  for (let i = 0; i < retrievals.length; i += GENERATION_CONCURRENCY) {
+    answers.push(...(await Promise.all(retrievals.slice(i, i + GENERATION_CONCURRENCY).map(generateAnswer))));
+  }
   await writeJson(ARTIFACTS.answers, answers);
   stage("ANSWERS_GENERATED");
 
@@ -91,9 +97,7 @@ async function run(): Promise<void> {
 
   const errors = await checkArtifacts();
   if (errors.length) {
-    console.error("Artifact checks failed:");
-    for (const e of errors) console.error(`  - ${e}`);
-    process.exit(1);
+    throw new PipelineError(["Artifact checks failed:", ...errors.map((e) => `  - ${e}`)]);
   }
   stage("VALIDATION_COMPLETE");
   console.log(

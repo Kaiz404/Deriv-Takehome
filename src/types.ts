@@ -41,6 +41,7 @@ export type RetrievedChunk = {
   doc_id: string;
   score: number;
   text: string;
+  heading: string;
   bm25: number;
   cosine: number;
 };

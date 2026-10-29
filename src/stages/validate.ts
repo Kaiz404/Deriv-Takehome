@@ -40,7 +40,7 @@ export function validateAnswer(a: Answer, r: RetrievalResult): ValidationResult 
       }
     }
 
-    if (a.answer.trim() === UNSUPPORTED_ANSWER || /knowledge base does not/i.test(a.answer)) {
+    if (/knowledge base does not/i.test(a.answer)) {
       add("SUPPORTED_FLAG_MISMATCH", "error", "supported=true but the answer says the knowledge base does not cover it");
     }
   } else if (a.answer !== UNSUPPORTED_ANSWER) {

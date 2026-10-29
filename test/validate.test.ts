@@ -5,7 +5,7 @@ import { generateAnswer } from "../src/stages/generate.ts";
 import { enforce, extractNumbers, validateAnswer } from "../src/stages/validate.ts";
 import type { Answer, RetrievalResult } from "../src/types.ts";
 
-const chunk = (chunk_id: string, text: string) => ({ chunk_id, doc_id: "d.md", score: 1, text, bm25: 1, cosine: 1 });
+const chunk = (chunk_id: string, text: string) => ({ chunk_id, doc_id: "d.md", score: 1, text, heading: "", bm25: 1, cosine: 1 });
 
 const retrieval = (text: string, gate: RetrievalResult["gate"] = null): RetrievalResult => ({
   id: 1,
